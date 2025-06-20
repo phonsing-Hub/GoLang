@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: fiber-mvc-api
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - PORT=3000
+      - ENV=production
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-fiber_user}
+      - DB_PASSWORD=${DB_PASSWORD:-fiber_password}
+      - DB_NAME=${DB_NAME:-fiber_db}
+      - DB_SSLMODE=disable
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key}
+      - JWT_EXPIRE_HOURS=72
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - fiber-network
+    # Mount logs volume (optional)
+    volumes:
+      - ./logs:/app/logs
+
+  # Database service
+  postgres:
+    image: postgres:15-alpine
+    container_name: fiber-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${DB_USER:-fiber_user}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-fiber_password}
+      - POSTGRES_DB=${DB_NAME:-fiber_db}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d  # Initialize scripts
+    networks:
+      - fiber-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-fiber_user} -d ${DB_NAME:-fiber_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis service (optional - for caching)
+  redis:
+    image: redis:7-alpine
+    container_name: fiber-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - fiber-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+
+  # Nginx reverse proxy (optional)
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: fiber-nginx
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - ./nginx/ssl:/etc/nginx/ssl:ro  # SSL certificates
+  #   depends_on:
+  #     - app
+  #   networks:
+  #     - fiber-network
+
+# Networks
+networks:
+  fiber-network:
+    driver: bridge
+
+# Volumes
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
