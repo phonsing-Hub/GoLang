@@ -3,28 +3,21 @@ version: '3.8'
 services:
   app:
     build: 
-      context: .
-      dockerfile: Dockerfile.dev  
+      context: ..
+      dockerfile: docker/Dockerfile.dev  
     container_name: fiber-mvc-api-dev
     restart: unless-stopped
     ports:
       - "3000:3000"
-    # environment:
-    #   - PORT=3000
-    #   - ENV=development
-    #   - DB_HOST=postgres
-    #   - DB_PORT=5432
-    #   - DB_USER=fiber_user
-    #   - DB_PASSWORD=fiber_password
-    #   - DB_NAME=fiber_db
-    #   - DB_SSLMODE=disable
-    #   - JWT_SECRET=dev-jwt-secret-key
+    env_file:
+      - ../env/.env.example
     volumes:
-      - .:/app  # Mount source code for hot reload
-      - /app/vendor  # Exclude vendor directory
-    depends_on:
-      postgres:
-        condition: service_healthy
+      - ../:/app
+      - ../.air.toml:/app/.air.toml  
+      
+    # depends_on:
+    #   postgres:
+    #     condition: service_healthy
     networks:
       - fiber-network
 

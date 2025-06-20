@@ -1,47 +1,36 @@
+# Go build artifacts
+/tmp
+/tmp/*
+*.out
+*.exe
+*.test
+*.log
+
+# Editor & OS files
+.vscode
+.idea
+.DS_Store
+*.swp
+*.swo
+
 # Git
 .git
 .gitignore
 
-# Documentation
-README.md
-*.md
-
-# Environment files
+# Env files
 .env
-.env.local
-.env.example
+.env.*
 
-# Logs
-*.log
-logs/
+# Docker ignore itself
+.dockerignore
 
-# Dependencies
-vendor/
-node_modules/
-
-# Build artifacts
-tmp/
-dist/
-build/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Test files
-*_test.go
-testdata/
-
-# Air
+# Air config
 .air.toml
 
-# Docker
-Dockerfile*
-docker-compose*
-.dockerignore
+# Optional: exclude README / LICENSE if image doesn't need them
+README.md
+LICENSE
+
+# Node modules (if frontend lives here)
+node_modules
+logs
