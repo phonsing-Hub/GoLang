@@ -94,13 +94,6 @@ This project serves as a robust base structure for building RESTful APIs using t
     Create a `.env` file in the root directory based on `config/config.go` or `config/config.example.env` (if provided).
     Example `.env` file:
 
-    ```dotenv
-    APP_PORT=8080
-    DB_URL="host=localhost user=youruser password=yourpassword dbname=yourdb port=5432 sslmode=disable TimeZone=Asia/Bangkok"
-    # Other environment variables like JWT_SECRET, etc.
-    ```
-
-    *Make sure your `DB_URL` points to a running PostgreSQL instance.*
 
 3.  **Run with Docker Compose (Recommended for Local Dev)**:
     This will start both the PostgreSQL database and your Go application.
