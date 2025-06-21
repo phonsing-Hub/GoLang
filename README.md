@@ -1,428 +1,158 @@
-# Go Fiber MVC Pattern API
 
-🚀 RESTful API built with Go Fiber using MVC (Model-View-Controller) architecture pattern with JWT authentication and PostgreSQL database.
+# GoFiber API Base Structure
 
-## 📋 Table of Contents
+This project serves as a robust base structure for building RESTful APIs using the **Fiber** web framework in Go, integrated with **GORM** for database interactions. It emphasizes a clean, modular architecture, making it easy to extend and maintain.
 
-- [Features](#features)
-- [Project Structure](#project-structure)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Environment Variables](#environment-variables)
-- [Database Setup](#database-setup)
-- [Running the Application](#running-the-application)
-- [API Documentation](#api-documentation)
-- [Testing](#testing)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
 
-## ✨ Features
 
-- 🏗️ **MVC Architecture** - Clean and maintainable code structure
-- 🔐 **JWT Authentication** - Secure user authentication and authorization
-- 👤 **User Management** - Complete CRUD operations for users
-- 🗃️ **PostgreSQL** - Robust database with GORM ORM
-- 🔒 **Password Hashing** - Secure password storage with bcrypt
-- 📝 **Request Validation** - Input validation using struct tags
-- 🚦 **Middleware** - Custom authentication and logging middleware
-- 📊 **Error Handling** - Centralized error handling
-- 🐳 **Docker Support** - Containerized application
-- 📚 **API Documentation** - Comprehensive API documentation
 
-## 📁 Project Structure
+  * **GoFiber Framework**: Fast, unopinionated, and low-allocation HTTP framework for Go.
+  * **GORM ORM**: Elegant ORM for Go, with support for PostgreSQL (and easily extendable to other databases).
+  * **Structured Project Layout**: Organized into logical directories for clear separation of concerns.
+  * **Environment Configuration**: Manages application settings using environment variables.
+  * **Database Migrations**: Simple setup for managing database schema changes.
+  * **Request/Response Helpers**: Standardized methods for handling API responses.
+  * **Centralized Error Handling**: Custom middleware for consistent error responses.
+  * **Logging**: Basic logging setup for application monitoring.
+  * **Docker Support**: `Dockerfile` and `docker-compose.yml` for easy containerization and local development setup.
+  * **Swagger/OpenAPI Integration**: (Planned/Placeholder) for API documentation.
+  * **Authentication & Authorization (Placeholder)**: Structure for implementing JWT-based authentication.
+  * **Generic CRUD Operations**: Reusable helper functions for common database operations (`FindAll`, `FindByID`).
+
+
+
+## Project Structure Overview
 
 ```
-project-name/
-├── controllers/          # Request handlers and business logic
-│   ├── auth_controller.go
-│   └── user_controller.go
-├── models/              # Data models and database schemas
-│   └── user.go
-├── routes/              # Route definitions and grouping
-│   └── routes.go
-├── middleware/          # Custom middleware functions
-│   └── auth.go
-├── database/           # Database connection and configuration
-│   ├── connection.go
-│   └── migration.go
-├── config/             # Application configuration
-│   └── config.go
-├── utils/              # Utility functions
-│   └── validator.go
-├── docker/             # Docker configuration files
-│   └── Dockerfile
-├── migrations/         # Database migration files
-├── .env.example        # Environment variables example
-├── .gitignore
-├── go.mod
-├── go.sum
-├── main.go             # Application entry point
-└── README.md
+.
+├── Dockerfile                  # Defines the Docker image for the application
+├── LICENSE                     # Project license (e.g., MIT)
+├── Makefile                    # Utility for common development tasks (e.g., build, run, test)
+├── README.md                   # This file
+├── config                      # Application configuration (environment variables)
+│   ├── config.go               # Loads environment variables
+│   └── swagger.go              # Swagger configuration (placeholder)
+├── controllers                 # API logic handlers (where business logic resides)
+├── database                    # Database related files
+│   ├── base.go                 # Database connection setup (GORM DB instance)
+│   ├── init                    # Database initialization (e.g., auto-migrate)
+│   ├── models                  # GORM models (structs representing database tables)
+│   │   ├── init.go             # Model initialization
+│   │   └── users.go            # Example User model
+│   └── views                   # Database views (if any)
+│       └── init.go             # View initialization
+├── docker-compose.yml          # Defines multi-container Docker applications (app + postgres)
+├── docs                        # API documentation (Swagger/OpenAPI spec)
+│   ├── docs.go                 # Generated Swagger docs
+│   ├── swagger.json            # Generated Swagger JSON
+│   └── swagger.yaml            # Generated Swagger YAML
+├── go.mod                      # Go modules file (dependencies)
+├── go.sum                      # Go modules checksums
+├── logs                        # Directory for application logs
+├── main.go                     # Main entry point of the application
+├── middleware                  # Fiber middleware
+│   ├── errorhandler.go         # Custom error handling middleware
+│   └── logger.go               # Logging middleware (e.g., FiberAccessLogger)
+├── pkg                         # Reusable packages/modules
+│   ├── auth                    # Authentication related logic (placeholder)
+│   └── jwt                     # JWT specific logic (placeholder)
+├── routes                      # API route definitions
+│   ├── api                     # API versioning or logical grouping
+│   │   └── user.go             # User-specific API routes
+│   └── routes.go               # Central route registration
+├── scripts                     # Utility scripts
+│   └── migration.go            # Database migration script (e.g., for auto-migrating models)
+├── tmp                         # Temporary files (e.g., build logs)
+│   └── build-errors.log        # Log for build errors
+└── utils                       # Utility functions
+    ├── helper                  # General helper functions
+    │   └── get.go              # Generic `FindAll`, `FindByID` functions
+    └── response                # Standardized API response handlers
+        ├── response.go         # `OK`, `Fail` response functions
+        └── swagger.go          # Swagger response definitions (placeholder)
 ```
 
-## 🔧 Prerequisites
-
-- **Go** 1.19 or higher
-- **PostgreSQL** 12 or higher
-- **Git**
-- **Docker** (optional)
-
-## 🚀 Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/phonsing-Hub/GoLang.git
-   cd GoLang
-   ```
-
-2. **Install dependencies**
-   ```bash
-   go mod download
-   ```
-
-3. **Copy environment file**
-   ```bash
-   cp .env.example .env
-   ```
-
-4. **Edit environment variables** (see [Environment Variables](#environment-variables))
-
-## 🌍 Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-# Server Configuration
-PORT=3000
-ENV=development
-
-# Database Configuration
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=your_db_user
-DB_PASSWORD=your_db_password
-DB_NAME=your_db_name
-DB_SSLMODE=disable
-
-# JWT Configuration
-JWT_SECRET=your-super-secret-jwt-key-here
-JWT_EXPIRE_HOURS=72
-
-# CORS Configuration
-CORS_ORIGINS=http://localhost:3000,http://localhost:3001
-```
-
-## 🗄️ Database Setup
-
-1. **Create PostgreSQL database**
-   ```sql
-   CREATE DATABASE your_db_name;
-   ```
-
-2. **Run migrations** (automatic on first run)
-   ```bash
-   go run main.go
-   ```
-
-   Or manually:
-   ```bash
-   go run database/migration.go
-   ```
-
-## 🏃‍♂️ Running the Application
-
-### Development Mode
-```bash
-# Run with auto-reload (using air)
-go install github.com/cosmtrek/air@latest
-air
-
-# Or run normally
-go run main.go
-```
-
-### Production Mode
-```bash
-# Build the application
-go build -o app main.go
-
-# Run the binary
-./app
-```
-
-### Using Docker
-```bash
-# Build and run with Docker Compose
-docker-compose up --build
-
-# Or build Docker image manually
-docker build -t fiber-mvc-api .
-docker run -p 3000:3000 --env-file .env fiber-mvc-api
-```
-
-## 📚 API Documentation
-
-### Base URL
-```
-http://localhost:3000/api/v1
-```
-
-### Authentication Endpoints
-
-#### Register User
-```http
-POST /api/v1/auth/register
-Content-Type: application/json
-
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "password123"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "User registered successfully",
-  "data": {
-    "id": 1,
-    "name": "John Doe",
-    "email": "john@example.com",
-    "created_at": "2024-01-01T00:00:00Z",
-    "updated_at": "2024-01-01T00:00:00Z"
-  }
-}
-```
-
-#### Login User
-```http
-POST /api/v1/auth/login
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "password": "password123"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Login successful",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": 1,
-    "name": "John Doe",
-    "email": "john@example.com"
-  }
-}
-```
-
-### User Management Endpoints
-
-> 🔒 **Note:** All user endpoints require authentication. Include the JWT token in the Authorization header:
-> ```
-> Authorization: Bearer YOUR_JWT_TOKEN
-> ```
-
-#### Get All Users
-```http
-GET /api/v1/users
-Authorization: Bearer YOUR_JWT_TOKEN
-```
-
-#### Get User by ID
-```http
-GET /api/v1/users/{id}
-Authorization: Bearer YOUR_JWT_TOKEN
-```
-
-#### Create User
-```http
-POST /api/v1/users
-Authorization: Bearer YOUR_JWT_TOKEN
-Content-Type: application/json
-
-{
-  "name": "Jane Doe",
-  "email": "jane@example.com",
-  "password": "password123"
-}
-```
-
-#### Update User
-```http
-PUT /api/v1/users/{id}
-Authorization: Bearer YOUR_JWT_TOKEN
-Content-Type: application/json
-
-{
-  "name": "Jane Smith",
-  "email": "jane.smith@example.com"
-}
-```
-
-#### Delete User
-```http
-DELETE /api/v1/users/{id}
-Authorization: Bearer YOUR_JWT_TOKEN
-```
-
-### Error Responses
-
-```json
-{
-  "error": "Error message description"
-}
-```
-
-**Common HTTP Status Codes:**
-- `200` - OK
-- `201` - Created
-- `400` - Bad Request
-- `401` - Unauthorized
-- `404` - Not Found
-- `409` - Conflict
-- `500` - Internal Server Error
-
-## 🧪 Testing
-
-### Run Tests
-```bash
-# Run all tests
-go test ./...
-
-# Run tests with coverage
-go test -cover ./...
-
-# Run tests with verbose output
-go test -v ./...
-```
-
-### API Testing with curl
-
-```bash
-# Register a new user
-curl -X POST http://localhost:3000/api/v1/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Test User","email":"test@example.com","password":"password123"}'
-
-# Login
-curl -X POST http://localhost:3000/api/v1/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"password123"}'
-
-# Get all users (replace TOKEN with actual JWT token)
-curl -X GET http://localhost:3000/api/v1/users \
-  -H "Authorization: Bearer TOKEN"
-```
-
-## 🐳 Deployment
-
-### Docker Deployment
-
-1. **Build Docker image**
-   ```bash
-   docker build -t fiber-mvc-api .
-   ```
-
-2. **Run with Docker Compose**
-   ```bash
-   docker-compose up -d
-   ```
-
-### Cloud Deployment
-
-#### Heroku
-```bash
-# Login to Heroku
-heroku login
-
-# Create app
-heroku create your-app-name
-
-# Set environment variables
-heroku config:set JWT_SECRET=your-jwt-secret
-heroku config:set DATABASE_URL=your-postgres-url
-
-# Deploy
-git push heroku main
-```
-
-#### Railway
-```bash
-# Install Railway CLI
-npm install -g @railway/cli
-
-# Login and deploy
-railway login
-railway init
-railway up
-```
-
-## 🔒 Security Best Practices
-
-- 🔐 **JWT Secret**: Use a strong, randomly generated JWT secret
-- 🛡️ **Password Hashing**: Passwords are hashed using bcrypt
-- 🚫 **SQL Injection**: Protected by GORM ORM
-- 🌐 **CORS**: Configure CORS for production domains
-- 📝 **Input Validation**: All inputs are validated using struct tags
-- 🔍 **Error Handling**: Sensitive information is not exposed in error messages
-
-## 📈 Performance Optimization
-
-- ⚡ **Connection Pooling**: Database connection pooling configured
-- 🗜️ **Compression**: Gzip compression enabled
-- 📊 **Logging**: Structured logging with configurable levels
-- 🚀 **Caching**: Ready for Redis integration
-- 📏 **Rate Limiting**: Can be easily added with Fiber middleware
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Code Style Guidelines
-
-- Follow Go conventions and best practices
-- Use `gofmt` for code formatting
-- Write tests for new features
-- Update documentation as needed
-- Use meaningful commit messages
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙋‍♂️ Support
-
-If you have any questions or need help, please:
-
-1. Check the [Issues](https://github.com/yourusername/fiber-mvc-api/issues) page
-2. Create a new issue if your problem isn't already reported
-3. Provide detailed information about your environment and the issue
-
-## 🚀 Roadmap
-
-- [ ] Add Redis caching
-- [ ] Implement rate limiting
-- [ ] Add file upload functionality
-- [ ] Create admin dashboard
-- [ ] Add email verification
-- [ ] Implement role-based access control (RBAC)
-- [ ] Add API versioning
-- [ ] Create comprehensive test suite
-- [ ] Add monitoring and metrics
-- [ ] Implement GraphQL support
-
----
-
-**Happy Coding!** 🎉
-
-Made with ❤️ using Go Fiber
+
+
+## Getting Started
+
+### Prerequisites
+
+  * Go (version 1.20 or higher recommended)
+  * Docker & Docker Compose (for local development with PostgreSQL)
+
+### Setup and Run (Local)
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/phonsing-Hub/GoLang.git # (Replace with actual repo URL)
+    cd GoLang
+    ```
+
+2.  **Configure Environment Variables**:
+    Create a `.env` file in the root directory based on `config/config.go` or `config/config.example.env` (if provided).
+    Example `.env` file:
+
+    ```dotenv
+    APP_PORT=8080
+    DB_URL="host=localhost user=youruser password=yourpassword dbname=yourdb port=5432 sslmode=disable TimeZone=Asia/Bangkok"
+    # Other environment variables like JWT_SECRET, etc.
+    ```
+
+    *Make sure your `DB_URL` points to a running PostgreSQL instance.*
+
+3.  **Run with Docker Compose (Recommended for Local Dev)**:
+    This will start both the PostgreSQL database and your Go application.
+
+    ```bash
+    docker-compose up --build
+    ```
+
+    This command will:
+
+      * Build the Docker image for your Go application.
+      * Start a PostgreSQL container.
+      * Start your Go application container, connected to the PostgreSQL container.
+
+4.  **Run Natively (without Docker Compose)**:
+
+      * **Start PostgreSQL Database**: Ensure you have a PostgreSQL server running locally and configured as per your `DB_URL`.
+      * **Install Dependencies**:
+        ```bash
+        go mod tidy
+        ```
+      * **Run Migrations**:
+        If you have a migration script to create tables:
+        ```bash
+        go run scripts/migration.go
+        ```
+        (You might need to adjust this command based on your `migration.go` content.)
+      * **Run the Application**:
+        ```bash
+        go run main.go
+        ```
+
+## API Endpoints (Examples)
+
+Once the server is running (e.g., on `http://localhost:8080`), you can test the following endpoints:
+
+### User Management (`/users`)
+
+  * **`GET /users`**: Get a list of all users with pagination, sorting, and filtering.
+      * **Example**: `GET /users?page=1&limit=10&sort_by=name&sort_order=desc&search[name]=john&status=active`
+  * **`GET /users/:id`**: Get a single user by ID.
+      * **Example**: `GET /users/123`
+
+
+
+## Contributing
+
+Feel free to fork this repository and adapt it to your needs. Contributions are welcome\!
+
+
+
+## License
+
+This project is licensed under the [MIT License](https://www.google.com/search?q=LICENSE).
+
