@@ -21,8 +21,14 @@ type ErrorResponse struct {
 	Error   *ErrorDetail `json:"error"`
 }
 
-func OK[T any](c *fiber.Ctx, data T) error {
-	return c.JSON(SuccessResponse[T]{
+func OK[T any](c *fiber.Ctx, data T, optionalStatus ...int) error {
+	status := fiber.StatusOK
+
+	if len(optionalStatus) > 0 {
+		status = optionalStatus[0]
+	}
+
+	return c.Status(status).JSON(SuccessResponse[T]{
 		Success: true,
 		Data:    data,
 		Error:   nil,

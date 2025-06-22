@@ -8,10 +8,11 @@ import (
 )
 
 type Config struct {
-	AppPort  string
+	AppPort     string
 	Development bool
-	LogLevel string
-	DBUrl    string
+	LogLevel    string
+	DBUrl       string
+	JWTSecret   string
 }
 
 var Env *Config
@@ -23,10 +24,11 @@ func LoadEnv() {
 	}
 
 	Env = &Config{
-		AppPort:  getEnv("APP_PORT", "3000"),
+		AppPort:     getEnv("APP_PORT", "3000"),
 		Development: getEnv("DEV_MODE", "false") == "true",
-		LogLevel: getEnv("LOG_LEVEL", "info"),
-		DBUrl:    getEnv("DATABASE_URL", "postgres://user:pass@localhost/db"),
+		LogLevel:    getEnv("LOG_LEVEL", "info"),
+		DBUrl:       getEnv("DATABASE_URL", "postgres://user:pass@localhost/db"),
+		JWTSecret:   getEnv("JWT_SECRET", "your_jwt_secret"),
 	}
 }
 

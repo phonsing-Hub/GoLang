@@ -3,11 +3,16 @@ package routes
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
+	"github.com/phonsing-Hub/GoLang/middleware"
 	"github.com/phonsing-Hub/GoLang/routes/api"
 )
 
 func SetupRoutes(app *fiber.App) {
+	app.Use(middleware.FiberAccessLogger())
+	app.Use(middleware.ZapLogger())
+
 	apiGroup := app.Group("/api/v1")
+	api.SetupAuthRoutes(apiGroup)
 	api.SetupUserRoutes(apiGroup)
 }
 
