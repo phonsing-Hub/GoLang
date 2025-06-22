@@ -62,8 +62,6 @@ This project serves as a robust base structure for building RESTful APIs using t
 │   └── routes.go               # Central route registration
 ├── scripts                     # Utility scripts
 │   └── migration.go            # Database migration script (e.g., for auto-migrating models)
-├── tmp                         # Temporary files (e.g., build logs)
-│   └── build-errors.log        # Log for build errors
 └── utils                       # Utility functions
     ├── helper                  # General helper functions
     │   └── get.go              # Generic `FindAll`, `FindByID` functions
