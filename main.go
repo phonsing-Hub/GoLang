@@ -15,10 +15,13 @@ func main() {
 	if err := database.Init(config.Env.DBUrl); err != nil {
 		log.Fatalf("failed to connect database: %v", err)
 	}
-	app := fiber.New(fiber.Config{
+  app := fiber.New()
+	app_v1 := fiber.New(fiber.Config{
 		ErrorHandler: middleware.ErrorHandler,
 	})
-	routes.SetupRoutes(app)
+	routes.SetupRoutes(app_v1)
 	routes.SetupMonitorRoute(app)
+	
+	app.Mount("/api/v1", app_v1)
 	app.Listen(fmt.Sprintf(":%s", config.Env.AppPort))
 }

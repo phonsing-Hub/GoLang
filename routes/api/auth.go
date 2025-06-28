@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func SetupAuthRoutes(router fiber.Router) {
+func SetupAuthRoutes(router *fiber.App) {
 	authGroup := router.Group("/auth")
 	authGroup.Post("/login", login)
 	authGroup.Get("/profile", middleware.JWTAuthMiddleware(), profile)

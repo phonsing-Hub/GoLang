@@ -11,7 +11,7 @@ import (
 	"github.com/phonsing-Hub/GoLang/utils/response"
 )
 
-func SetupUserRoutes(router fiber.Router) {
+func SetupUserRoutes(router *fiber.App) {
 	userGroup := router.Group("/users")
 	userGroup.Use(middleware.JWTAuthMiddleware())
 

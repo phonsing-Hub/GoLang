@@ -11,9 +11,9 @@ func SetupRoutes(app *fiber.App) {
 	app.Use(middleware.FiberAccessLogger())
 	app.Use(middleware.ZapLogger())
 
-	apiGroup := app.Group("/api/v1")
-	api.SetupAuthRoutes(apiGroup)
-	api.SetupUserRoutes(apiGroup)
+	// apiGroup := app.Group("/api/v1")
+	api.SetupAuthRoutes(app)
+	api.SetupUserRoutes(app)
 }
 
 func SetupMonitorRoute(app *fiber.App) {
