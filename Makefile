@@ -6,4 +6,4 @@ api-docs:
 	swag init --output docs
 
 migrate:
-	go run scripts/migration.go
+	./migrate

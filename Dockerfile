@@ -17,6 +17,7 @@ COPY . .
 # -ldflags="-s -w" reduces the binary size by stripping debug info
 # RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o fiber-app .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o fiber-app .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o migrate ./scripts/migration.go
 # Final stage
 FROM alpine:3.19
 
@@ -25,6 +26,7 @@ RUN adduser -D -g '' appuser
 WORKDIR /app
 
 COPY --from=builder /app/fiber-app /app/fiber-app
+COPY --from=builder /app/migrate /app/migrate
 
 # Ensure log directory exists
 RUN mkdir -p /app/logs && chown appuser:appuser /app/logs
