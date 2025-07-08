@@ -44,8 +44,18 @@ func login(c *fiber.Ctx) error {
 		return response.Fail(c, "TOKEN_GENERATION_FAILED", "failed to generate token", fiber.StatusInternalServerError)
 	}
 
+	var user models.Users
+	err = database.DB.
+		Preload("CurrentStatus").
+		Preload("Locations").
+		First(&user, existingUser.UserID).Error
+	if err != nil {
+		return response.Fail(c, "USER_DATA_NOT_FOUND", "user data not found", fiber.StatusNotFound)
+	}
+
 	return response.OK(c, fiber.Map{
 		"token": token,
+		"user":  user,
 	}, fiber.StatusOK)
 }
 
@@ -54,7 +64,7 @@ func profile(c *fiber.Ctx) error {
 	var user models.Users
 	err := database.DB.
 		Joins("CurrentStatus").
-		Preload("Locations").  
+		Preload("Locations").
 		Where("users.id = ?", userClaims.UserID).
 		First(&user).Error
 
