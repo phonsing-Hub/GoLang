@@ -13,6 +13,7 @@ type Config struct {
 	LogLevel    string
 	DBUrl       string
 	JWTSecret   string
+	CORSAllowOrigins string 
 }
 
 var Env *Config
@@ -29,6 +30,7 @@ func LoadEnv() {
 		LogLevel:    getEnv("LOG_LEVEL", "info"),
 		DBUrl:       getEnv("DATABASE_URL", "postgres://user:pass@localhost/db"),
 		JWTSecret:   getEnv("JWT_SECRET", "your_jwt_secret"),
+		CORSAllowOrigins: getEnv("CORS_ALLOW_ORIGINS", "*"),
 	}
 }
 
