@@ -2,7 +2,7 @@ package helper
 
 import (
 	"github.com/go-playground/validator/v10"
-	"github.com/phonsing-Hub/GoLang/utils/response"
+	"github.com/phonsing-Hub/GoLang/internal/utils/response"
 
 	"time"
 )

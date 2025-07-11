@@ -3,7 +3,7 @@ package middleware
 import (
 	"github.com/gofiber/fiber/v2"
 	fiberlogger "github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/phonsing-Hub/GoLang/config"
+	"github.com/phonsing-Hub/GoLang/internal/config"
 
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"

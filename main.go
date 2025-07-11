@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/phonsing-Hub/GoLang/config"
-	"github.com/phonsing-Hub/GoLang/database"
-	"github.com/phonsing-Hub/GoLang/middleware"
-	"github.com/phonsing-Hub/GoLang/routes"
+	"github.com/phonsing-Hub/GoLang/internal/config"
+	"github.com/phonsing-Hub/GoLang/internal/database"
+	"github.com/phonsing-Hub/GoLang/internal/middleware"
+	"github.com/phonsing-Hub/GoLang/internal/routes"
 	"log"
 )
 

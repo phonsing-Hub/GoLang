@@ -2,7 +2,7 @@ package helper
 
 import (
 	"fmt"
-	"github.com/phonsing-Hub/GoLang/utils/response"
+	"github.com/phonsing-Hub/GoLang/internal/utils/response"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"

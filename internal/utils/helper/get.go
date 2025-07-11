@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/phonsing-Hub/GoLang/utils/response"
+	"github.com/phonsing-Hub/GoLang/internal/utils/response"
 	"gorm.io/gorm"
 )
 

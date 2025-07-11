@@ -5,7 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/phonsing-Hub/GoLang/pkg/jwt"
-	"github.com/phonsing-Hub/GoLang/utils/response"
+	"github.com/phonsing-Hub/GoLang/internal/utils/response"
 )
 
 func JWTAuthMiddleware() fiber.Handler {

@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/phonsing-Hub/GoLang/config"
-	"github.com/phonsing-Hub/GoLang/database"
-	"github.com/phonsing-Hub/GoLang/database/models"
-	"github.com/phonsing-Hub/GoLang/database/views"
+	"github.com/phonsing-Hub/GoLang/internal/config"
+	"github.com/phonsing-Hub/GoLang/internal/database"
+	"github.com/phonsing-Hub/GoLang/internal/database/models"
+	"github.com/phonsing-Hub/GoLang/internal/database/views"
 	"log"
 )
 

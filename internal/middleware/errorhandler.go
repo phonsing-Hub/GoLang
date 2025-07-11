@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/phonsing-Hub/GoLang/utils/response"
+	"github.com/phonsing-Hub/GoLang/internal/utils/response"
 )
 
 func ErrorHandler(c *fiber.Ctx, err error) error {
