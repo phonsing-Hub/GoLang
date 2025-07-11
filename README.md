@@ -98,7 +98,7 @@ The API will be available at `http://localhost:3000` (or the port you specify in
 
 ## API Endpoints (Examples)
 
-Once the server is running (e.g., on `http://localhost:8080`), you can test the following endpoints:
+Once the server is running (e.g., on `http://localhost:3000`), you can test the following endpoints:
 
 
   * **`GET /users`**: Get a list of all users with pagination, sorting, and filtering.
