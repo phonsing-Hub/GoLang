@@ -16,7 +16,6 @@ type Users struct {
 	FirstName          string     `json:"first_name"`
 	LastName           string     `json:"last_name"`
 	DisplayName        string     `json:"display_name"`
-	ProfilePictureURL  string     `gorm:"default:null" json:"profile_picture_url"`
 	Bio                string     `gorm:"type:text;default:null" json:"bio"`
 	DateOfBirth        *time.Time `gorm:"default:null" json:"date_of_birth"`
 	Gender             string     `gorm:"default:null" json:"gender"`
