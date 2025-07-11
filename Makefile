@@ -7,7 +7,7 @@ build:
 run: build
 	./bin/app
 
-run-d: build
+run-bg: build
 	@mkdir -p logs
 	@nohup ./bin/app > logs/app.log 2>&1 & echo $$! > bin/app.pid
 	@echo "App is running in background. PID: `cat bin/app.pid`"
@@ -25,3 +25,9 @@ migrate: build
 
 run-dev:
 	go run main.go
+
+
+docker-migrate:
+	./migrate
+
+
