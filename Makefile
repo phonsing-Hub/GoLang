@@ -7,3 +7,6 @@ api-docs:
 
 migrate:
 	./migrate
+
+migrate-dev:
+	go run scripts/migration.go

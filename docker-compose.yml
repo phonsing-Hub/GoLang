@@ -9,6 +9,7 @@ services:
       - "${PORT:-3000}:3000"
     volumes:
       - ./logs:/app/logs
+      - ./static:/app/static
     networks:
       - fiber-network
     env_file:
@@ -28,7 +29,6 @@ services:
       - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./database/init:/docker-entrypoint-initdb.d  # Initialize scripts
     networks:
       - fiber-network
     healthcheck:

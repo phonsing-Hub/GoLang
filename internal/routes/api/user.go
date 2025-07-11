@@ -1,14 +1,17 @@
 package api
 
 import (
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/phonsing-Hub/GoLang/internal/database"
 	"github.com/phonsing-Hub/GoLang/internal/database/models"
 	"github.com/phonsing-Hub/GoLang/internal/database/schema"
 	"github.com/phonsing-Hub/GoLang/internal/middleware"
-	"github.com/phonsing-Hub/GoLang/pkg/auth"
 	"github.com/phonsing-Hub/GoLang/internal/utils/helper"
 	"github.com/phonsing-Hub/GoLang/internal/utils/response"
+	"github.com/phonsing-Hub/GoLang/pkg/auth"
+	"os"
+	"path/filepath"
 )
 
 func SetupUserRoutes(router *fiber.App) {
@@ -19,6 +22,9 @@ func SetupUserRoutes(router *fiber.App) {
 	userGroup.Get("/:id", get_user_id)
 	userGroup.Post("/", create_user)
 	userGroup.Put("/:id", update_user)
+
+	userGroup.Post("/:id/avatar", upload_user_avatar)
+	userGroup.Delete("/:id/avatar", delete_user_avatar)
 }
 
 func get_users(c *fiber.Ctx) error {
@@ -68,7 +74,7 @@ func create_user(c *fiber.Ctx) error {
 		PasswordHash:   hastPassword,
 	}
 	if err := tx.Create(&newCredential).Error; err != nil {
-		tx.Rollback() 
+		tx.Rollback()
 		return response.Fail(c, "DATABASE_ERROR", "Failed to create user credentials", fiber.StatusInternalServerError)
 	}
 
@@ -84,7 +90,7 @@ func create_user(c *fiber.Ctx) error {
 			IsDefault:    true, // Mark as default if it's the first location
 		}
 		if err := tx.Create(&newLocation).Error; err != nil {
-			tx.Rollback() 
+			tx.Rollback()
 			return response.Fail(c, "DATABASE_ERROR", "Failed to create user location", fiber.StatusInternalServerError)
 		}
 	}
@@ -99,4 +105,81 @@ func create_user(c *fiber.Ctx) error {
 
 func update_user(c *fiber.Ctx) error {
 	return helper.UpdateByID[models.Users](c, database.DB)
+}
+
+func upload_user_avatar(c *fiber.Ctx) error {
+	id := c.Params("id")
+
+	file, err := c.FormFile("avatar")
+	if err != nil {
+		return response.Fail(c, "BAD_REQUEST", "Avatar is required", fiber.StatusBadRequest)
+	}
+
+	var user models.Users
+	if err := database.DB.First(&user, "id = ?", id).Error; err != nil {
+		return response.Fail(c, "NOT_FOUND", "User not found", fiber.StatusNotFound)
+	}
+
+	if user.Avatar != "" {
+		oldPath := filepath.Join("./static/uploads", user.Avatar)
+		if err := os.Remove(oldPath); err != nil && !os.IsNotExist(err) {
+			return response.Fail(c, "INTERNAL_ERROR", "Failed to delete old avatar", fiber.StatusInternalServerError)
+		}
+	}
+
+	savePath, err := helper.ValidateAndRenameAvatar(file)
+	if err != nil {
+		return response.Fail(c, "BAD_REQUEST", err.Error(), fiber.StatusBadRequest)
+	}
+
+	if err := helper.PrepareAvatarPath(savePath); err != nil {
+		return response.Fail(c, "INTERNAL_ERROR", "Failed to create directory", fiber.StatusInternalServerError)
+	}
+
+	fullPath := fmt.Sprintf("./static/uploads/%s", savePath)
+
+	if err := c.SaveFile(file, fullPath); err != nil {
+		return response.Fail(c, "INTERNAL_ERROR", "Failed to save avatar", fiber.StatusInternalServerError)
+	}
+
+	if err := database.DB.Model(&user).Update("avatar", savePath).Error; err != nil {
+		return response.Fail(c, "INTERNAL_ERROR", "Failed to update avatar in database", fiber.StatusInternalServerError)
+	}
+
+	return response.OK(c, fiber.Map{
+		"message":   "Avatar uploaded successfully",
+		"avatarUrl": fmt.Sprintf("/static/%s", savePath),
+	}, fiber.StatusCreated)
+}
+
+func delete_user_avatar(c *fiber.Ctx) error {
+	id := c.Params("id")
+
+	var user models.Users
+	if err := database.DB.First(&user, "id = ?", id).Error; err != nil {
+		return response.Fail(c, "NOT_FOUND", "User not found", fiber.StatusNotFound)
+	}
+
+	if user.Avatar == "" {
+		return response.Fail(c, "BAD_REQUEST", "User has no avatar", fiber.StatusBadRequest)
+	}
+
+	fullPath := fmt.Sprintf("./static/uploads/%s", user.Avatar)
+
+	if err := os.Remove(fullPath); err != nil {
+		if !os.IsNotExist(err) {
+			return response.Fail(c, "INTERNAL_ERROR", "Failed to delete avatar file", fiber.StatusInternalServerError)
+		}
+	}
+
+	tx := database.DB.Begin()
+	if err := tx.Model(&user).Update("avatar", "").Error; err != nil {
+		tx.Rollback()
+		return response.Fail(c, "INTERNAL_ERROR", "Failed to clear avatar in database", fiber.StatusInternalServerError)
+	}
+	tx.Commit()
+
+	return response.OK(c, fiber.Map{
+		"message": "Avatar deleted successfully",
+	}, fiber.StatusOK)
 }

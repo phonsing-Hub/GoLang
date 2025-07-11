@@ -15,6 +15,7 @@
 # Dependency directories (if using vendor)
 vendor/
 tmp/
+static/uploads/
 
 # Go workspace file
 go.work

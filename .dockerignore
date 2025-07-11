@@ -17,10 +17,6 @@
 .git
 .gitignore
 
-# Env files
-.env
-.env.*
-
 # Docker ignore itself
 .dockerignore
 

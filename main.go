@@ -17,6 +17,7 @@ func main() {
 		log.Fatalf("failed to connect database: %v", err)
 	}
 	app := fiber.New()
+	app.Static("/static", "./static/uploads")
 	app_v1 := fiber.New(fiber.Config{
 		ErrorHandler: middleware.ErrorHandler,
 	})

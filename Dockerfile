@@ -16,8 +16,8 @@ COPY . .
 # GOOS=linux GOARCH=amd64 specifies the target OS and architecture
 # -ldflags="-s -w" reduces the binary size by stripping debug info
 # RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o fiber-app .
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o fiber-app .
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o migrate ./scripts/migration.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o fiber-app .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o migrate ./scripts/migration.go
 # Final stage
 FROM alpine:3.19
 

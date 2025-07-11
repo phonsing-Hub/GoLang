@@ -111,7 +111,7 @@ func FindByID[T any](c *fiber.Ctx, db *gorm.DB) error {
 	id := c.Params("id")
 	var model T
 	if err := db.First(&model, id).Error; err != nil {
-		return response.Fail(c, "NOT_FOUND", "Data not found", fiber.StatusOK)
+		return response.Fail(c, "NOT_FOUND", "Data not found", fiber.StatusNotFound)
 	}
 	return response.OK(c, model)
 }
