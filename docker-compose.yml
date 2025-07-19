@@ -1,25 +1,4 @@
 services:
-  app:
-    build: 
-      context: .
-      dockerfile: Dockerfile
-    container_name: fiber-api
-    restart: unless-stopped
-    ports:
-      - "${PORT:-3000}:3000"
-    volumes:
-      - ./docs:/app/docs
-      - ./logs:/app/logs
-      - ./static:/app/static
-    networks:
-      - fiber-network
-    env_file:
-      - .env
-    depends_on:
-      - postgres
-   
-
-  # Database service
   postgres:
     image: postgres:15-alpine
     container_name: fiber-postgres
@@ -37,6 +16,30 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: fiber-api
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    volumes:
+      - ./docs:/app/docs
+      - ./logs:/app/logs
+      - ./static:/app/static
+    networks:
+      - fiber-network
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+   
+
+  # Database service
+
 
   # Redis service (optional - for caching)
   # redis:
