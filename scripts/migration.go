@@ -44,6 +44,18 @@ func main() {
 		log.Printf("View created: %s", name)
 	}
 
+	//default userstatus
+	defaultStatuses := []*models.UserStatus{
+		{Name: "active", DisplayName: "Active", Description: "User is active", Color: "#28a745", IsActive: true, Position: 1},
+		{Name: "inactive", DisplayName: "Inactive", Description: "User is inactive", Color: "#6c757d", IsActive: true, Position: 2},
+		{Name: "suspended", DisplayName: "Suspended", Description: "User is suspended", Color: "#dc3545", IsActive: true, Position: 3},
+		{Name: "pending_verification", DisplayName: "Pending Verification", Description: "User is pending verification", Color: "#ffc107", IsActive: true, Position: 4},
+	}
+	if err := database.DB.Create(defaultStatuses).Error; err != nil {
+		log.Fatalf("failed to create default user statuses: %v", err)
+	}
+
 	log.Println("Migration completed successfully")
 }
+
 
