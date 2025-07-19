@@ -30,4 +30,8 @@ run-dev:
 docker-migrate:
 	./migrate
 
+swagger:
+	@echo "Generating Swagger documentation..."
+	@swag init
+	@echo "Swagger documentation generated in docs/swagger"
 

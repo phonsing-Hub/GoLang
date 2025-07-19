@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/phonsing-Hub/GoLang/internal/config"
 	"github.com/phonsing-Hub/GoLang/internal/database"
 	"github.com/phonsing-Hub/GoLang/internal/database/models"
 	"github.com/phonsing-Hub/GoLang/internal/database/views"
-	"log"
 )
 
 func main() {
@@ -15,10 +16,19 @@ func main() {
 		log.Fatalf("failed to connect DB: %v", err)
 	}
 
+	modelsList := models.All()
+	log.Printf("Starting migration for %d models:", len(modelsList))
+	for i, model := range modelsList {
+		modelName := fmt.Sprintf("%T", model)
+		log.Printf("[%d/%d] Migrating: %s", i+1, len(modelsList), modelName)
+	}
+
 	if err := database.DB.AutoMigrate(models.All()...); err != nil {
 		log.Fatalf("migration failed: %v", err)
 	}
 
+
+	log.Println("Managing database views...")
 	for name := range views.Views {
 		dropSQL := fmt.Sprintf("DROP VIEW IF EXISTS %s CASCADE;", name)
 		if err := database.DB.Exec(dropSQL).Error; err != nil {
@@ -36,3 +46,4 @@ func main() {
 
 	log.Println("Migration completed successfully")
 }
+

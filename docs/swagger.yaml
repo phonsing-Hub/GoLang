@@ -1,0 +1,164 @@
+basePath: /api/v1
+definitions:
+  response.SWErrorDetail:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    type: object
+  response.SWErrorResponse:
+    properties:
+      data: {}
+      error:
+        $ref: '#/definitions/response.SWErrorDetail'
+      success:
+        example: false
+        type: boolean
+    type: object
+  response.SWSuccessResponse:
+    properties:
+      data:
+        type: object
+      error:
+        type: object
+      success:
+        example: true
+        type: boolean
+    type: object
+  schema.LoginRequest:
+    properties:
+      email:
+        description: can be email or username
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  schema.RegisterRequest:
+    properties:
+      display_name:
+        maxLength: 100
+        type: string
+      email:
+        type: string
+      first_name:
+        maxLength: 100
+        minLength: 1
+        type: string
+      last_name:
+        maxLength: 100
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - first_name
+    - password
+    type: object
+info:
+  contact: {}
+  description: This is a sample API server using Fiber framework
+  title: GoLang API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login user with email and password
+      parameters:
+      - description: Login Request
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/schema.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SWSuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+      summary: User Login
+      tags:
+      - AUTH
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with email, username, and password
+      parameters:
+      - description: Register Request
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/schema.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SWSuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+      summary: User Registration
+      tags:
+      - AUTH
+  /auth/userinfo:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the authenticated user's information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SWSuccessResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get User Info
+      tags:
+      - AUTH
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
