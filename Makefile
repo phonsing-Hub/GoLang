@@ -28,7 +28,8 @@ run-dev:
 
 
 docker-migrate:
-	./migrate
+	docker compose exec app ./migrate
+
 
 swagger:
 	@echo "Generating Swagger documentation..."

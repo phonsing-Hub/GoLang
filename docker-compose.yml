@@ -8,6 +8,7 @@ services:
     ports:
       - "${PORT:-3000}:3000"
     volumes:
+      - ./docs:/app/docs
       - ./logs:/app/logs
       - ./static:/app/static
     networks:
