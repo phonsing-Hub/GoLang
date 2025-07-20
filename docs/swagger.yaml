@@ -66,6 +66,58 @@ info:
   title: GoLang API
   version: "1.0"
 paths:
+  /auth/google:
+    post:
+      consumes:
+      - application/json
+      description: Redirect to Google OAuth login
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SWSuccessResponse'
+      summary: Google OAuth Login
+      tags:
+      - AUTH
+  /auth/google/callback:
+    post:
+      consumes:
+      - application/json
+      description: Handle Google OAuth callback and exchange code for tokens
+      parameters:
+      - description: Authorization Code Request
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            code:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SWSuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+      summary: Google OAuth Callback
+      tags:
+      - AUTH
   /auth/login:
     post:
       consumes:

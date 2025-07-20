@@ -73,3 +73,20 @@ type OAuthLoginRequest struct {
 	AccessToken  string `json:"access_token" validate:"required"`
 	RefreshToken string `json:"refresh_token"`
 }
+
+type GoogleCallbackRequest struct {
+    Code  string `json:"code" validate:"required"`
+    State string `json:"state,omitempty"`
+    Error string `json:"error,omitempty"`
+    ErrorDescription string `json:"error_description,omitempty"`
+}
+
+type GoogleTokenResponse struct {
+    AccessToken  string `json:"access_token"`
+    TokenType    string `json:"token_type"`
+    ExpiresIn    int    `json:"expires_in"`
+    RefreshToken string `json:"refresh_token,omitempty"`
+    Scope        string `json:"scope"`
+    IDToken      string `json:"id_token,omitempty"`
+}
+
