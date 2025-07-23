@@ -25,7 +25,7 @@ type User struct {
 	StatusID           uint           `json:"status_id" gorm:"not null;index;default:1"` // FK to user_statuses (1=active)
 	LastLoginAt        *time.Time     `json:"last_login_at" gorm:"index"`
 	CreatedAt          time.Time      `json:"created_at"`
-	UpdatedAt          time.Time      `json:"updated_at"`
+	UpdatedAt          time.Time      `json:"updated_at" gorm:"autoUpdateTime"`
 	DeletedAt          gorm.DeletedAt `json:"-" gorm:"index"`
 
 	// Relationships

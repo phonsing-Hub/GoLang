@@ -9,7 +9,8 @@ definitions:
     type: object
   response.SWErrorResponse:
     properties:
-      data: {}
+      data:
+        type: object
       error:
         $ref: '#/definitions/response.SWErrorDetail'
       success:
@@ -59,6 +60,46 @@ definitions:
     - email
     - first_name
     - password
+    type: object
+  schema.UpdateUser:
+    properties:
+      bio:
+        maxLength: 500
+        type: string
+      date_of_birth:
+        type: string
+      display_name:
+        maxLength: 100
+        type: string
+      email:
+        type: string
+      first_name:
+        maxLength: 100
+        minLength: 1
+        type: string
+      gender:
+        enum:
+        - male
+        - female
+        - other
+        type: string
+      language_preference:
+        maxLength: 5
+        minLength: 2
+        type: string
+      last_name:
+        maxLength: 100
+        type: string
+      phone_number:
+        maxLength: 20
+        minLength: 10
+        type: string
+      time_zone:
+        type: string
+      username:
+        maxLength: 50
+        minLength: 3
+        type: string
     type: object
 info:
   contact: {}
@@ -207,6 +248,101 @@ paths:
       summary: Get User Info
       tags:
       - AUTH
+  /profile:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the authenticated user's profile information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SWSuccessResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get User Profile
+      tags:
+      - PROFILE
+    put:
+      consumes:
+      - application/json
+      description: Update the authenticated user's profile information
+      parameters:
+      - description: User Profile Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UpdateUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SWSuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update User Profile
+      tags:
+      - PROFILE
+  /profile/avatar:
+    put:
+      consumes:
+      - multipart/form-data
+      description: Update the authenticated user's avatar
+      parameters:
+      - description: Avatar image file (PNG, JPEG, WEBP, max 2MB)
+        in: formData
+        name: avatar
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SWSuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.SWErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update User Avatar
+      tags:
+      - PROFILE
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and JWT token.

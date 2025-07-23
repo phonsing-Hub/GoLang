@@ -46,7 +46,6 @@ type CreateUser struct {
 // UpdateUser represents the schema for updating user data
 type UpdateUser struct {
 	Email              string     `json:"email" validate:"omitempty,email"`
-	Username           string     `json:"username" validate:"omitempty,min=3,max=50"`
 	FirstName          string     `json:"first_name" validate:"omitempty,min=1,max=100"`
 	LastName           string     `json:"last_name" validate:"omitempty,max=100"`
 	DisplayName        string     `json:"display_name" validate:"omitempty,max=100"`

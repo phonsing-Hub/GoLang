@@ -23,6 +23,7 @@ import (
 	"gorm.io/gorm"
 )
 
+
 func SetupAuthRoutes(router *fiber.App) {
 	authGroup := router.Group("/auth")
 	authGroup.Post("/register", registerUser)

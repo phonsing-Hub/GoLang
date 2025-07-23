@@ -13,6 +13,7 @@ func SetupRoutes(app *fiber.App) {
 	app.Use(middleware.ZapLogger())
 
 	api.SetupAuthRoutes(app)
+	api.SetupUserhRoutes(app)
 
 }
 

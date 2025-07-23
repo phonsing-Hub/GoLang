@@ -44,7 +44,6 @@ func ZapLogger() fiber.Handler {
 	if config.Env.Development {
 		core = zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), level)
 	} else {
-		// prod mode: log ลงไฟล์แบบหมุน
 		_ = os.MkdirAll("logs", 0755)
 
 		logWriter := &lumberjack.Logger{
